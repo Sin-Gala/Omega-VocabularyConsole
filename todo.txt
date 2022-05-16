@@ -1,4 +1,4 @@
-﻿- Synonyms (?)
+﻿- Synonyms (?) + Simple def (?)
 - Rewrite prompts
 - "Installation" -> Goes to add language before anything else
 - Solo .exe file
