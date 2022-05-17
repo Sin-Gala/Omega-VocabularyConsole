@@ -38,7 +38,6 @@ namespace Omega_VocabularyConsole
             if (showError)
             {
                 Console.WriteLine("Word not found...");
-                PressAnyKeyPrompt();
             }
 
             return false;
@@ -89,11 +88,6 @@ namespace Omega_VocabularyConsole
 
             return new VocabWord();
         }
-
-        public void PressAnyKeyPrompt()
-        {
-            Console.WriteLine("--- Press any key to continue ---");
-        }
         #endregion
 
         #region SET DICO DATAS
@@ -106,7 +100,6 @@ namespace Omega_VocabularyConsole
                     if (languages.name == newLanguage)
                     {
                         Console.WriteLine("Language already set");
-                        PressAnyKeyPrompt();
                         return;
                     }
                 }
@@ -129,8 +122,6 @@ namespace Omega_VocabularyConsole
                     SaveVocab();
                 }
             }
-
-            PressAnyKeyPrompt();
         }
 
         public void RemoveLanguage(string languageToRemove)
@@ -154,14 +145,11 @@ namespace Omega_VocabularyConsole
                             }
                         }
                     }
-
-                    PressAnyKeyPrompt();
                     return;
                 }
             }
 
             Console.WriteLine("Language unknown");
-            PressAnyKeyPrompt();
         }
 
         public void RemoveEverything()
@@ -171,7 +159,6 @@ namespace Omega_VocabularyConsole
             Console.WriteLine("Languages and words deleted successfully!");
             SaveDico();
             SaveVocab();
-            PressAnyKeyPrompt();
         }
         #endregion
 
@@ -183,7 +170,6 @@ namespace Omega_VocabularyConsole
                 if (IsWordInList(vWord.word, false))
                 {
                     Console.WriteLine("This word is already saved");
-                    PressAnyKeyPrompt();
                     return;
                 }
                 else
@@ -191,7 +177,6 @@ namespace Omega_VocabularyConsole
                     vocabList.Add(newWord);
                     SaveVocab();
                     Console.WriteLine("Word added successfully!");
-                    PressAnyKeyPrompt();
                     break;
                 }
             }
@@ -202,14 +187,12 @@ namespace Omega_VocabularyConsole
             vocabList.Remove(GetVocabularyWord(word));
             SaveVocab();
             Console.WriteLine("Word removed successfully!");
-            PressAnyKeyPrompt();
         }
 
         public void RemoveAll()
         {
             vocabList.Clear();
             SaveVocab();
-            PressAnyKeyPrompt();
         }
 
         public void EditVocabularyWord(VocabularyWord oldWord, VocabularyWord newWord)
@@ -217,7 +200,6 @@ namespace Omega_VocabularyConsole
             vocabList[vocabList.IndexOf(oldWord)] = newWord;
             SaveVocab();
             Console.WriteLine("Word edited successfully!");
-            PressAnyKeyPrompt();
         }
         #endregion
 
@@ -296,6 +278,89 @@ namespace Omega_VocabularyConsole
             }
         }
         #endregion
+
+        #region SYNONYMS
+        public List<string> CheckForSynonyms(string word, bool sameLanguage)
+        {
+            List<string> allSynonyms = new List<string>();
+
+            if (sameLanguage)
+            {
+                foreach (string syn in GetVocabWord(word).synonymes)
+                {
+                    allSynonyms.Add(syn);
+                }
+            }
+            else
+            {
+                VocabularyWord temp = GetVocabularyWord(word);
+
+                if (temp != null)
+                {
+                    foreach (VocabWord vw in temp.translations)
+                    {
+                        foreach (string syn in vw.synonymes)
+                        {
+                            allSynonyms.Add(syn);
+                        }
+                    }
+                }
+            }
+
+            return allSynonyms;
+        }
+
+        public void CreateNewWordsSynonyms(int iLang, string word, VocabularyWord vWord)
+        {
+            int i = iLang;
+
+            if (!vWord.translations[i].synonymes.Contains(word))
+                vWord.translations[i].synonymes.Add(word);
+
+            // Add synonymes to already existing words in dico
+            for (int j = 0; j < vocabList.Count; j++)
+            {
+                if (vocabList[j].translations[i].word == word && !vocabList[j].translations[i].synonymes.Contains(word))
+                {
+                    vocabList[j].translations[i].synonymes.Add(word);
+                    break;
+                }
+                else if (vocabList[j].translations[i].word != word) continue;
+            }
+
+            // Create new dico words based on synonyms given
+            List<VocabWord> tempList = new List<VocabWord>();
+
+            for (int h = 0; h < languagesSupported.Count; h++)
+            {
+                if (h == i)
+                {
+                    tempList.Add(new VocabWord()
+                    {
+                        language = languagesSupported[h],
+                        synonymes = new List<string>()
+                            {
+                                vWord.translations[h].word
+                            },
+                        word = word
+                    });
+                }
+                else
+                {
+                    tempList.Add(new VocabWord()
+                    {
+                        language = languagesSupported[h],
+                        synonymes = new List<string>()
+                    });
+                }
+            }
+
+            vocabList.Add(new VocabularyWord()
+            {
+                translations = tempList
+            });
+        }
+        #endregion
     }
 
     public class Languages
@@ -306,19 +371,5 @@ namespace Omega_VocabularyConsole
         {
             this.name = name;
         }
-    }
-
-    //public enum Languages
-    //{
-    //    None = 0,
-    //    French = 1,
-    //    English = 2,
-    //    PortugueseBrazil = 3
-    //}
-
-    public struct VocabWord
-    {
-        public Languages language;
-        public string word;
     }
 }
