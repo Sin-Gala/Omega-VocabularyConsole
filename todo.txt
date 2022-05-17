@@ -1,3 +1,0 @@
-﻿- Simple def (?) / Notes (?)
-- Solo .exe file
-- Prompt translation

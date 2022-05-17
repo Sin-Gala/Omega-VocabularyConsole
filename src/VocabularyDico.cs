@@ -310,20 +310,22 @@ namespace Omega_VocabularyConsole
             return allSynonyms;
         }
 
-        public void CreateNewWordsSynonyms(int iLang, string word, VocabularyWord vWord)
+        public void CreateNewWordsSynonyms(int i, string word, VocabularyWord vWord) // i = langIndex
         {
-            int i = iLang;
-
+            // Add synonyme to the new/edited word
             if (!vWord.translations[i].synonymes.Contains(word))
                 vWord.translations[i].synonymes.Add(word);
 
             // Add synonymes to already existing words in dico
             for (int j = 0; j < vocabList.Count; j++)
             {
-                if (vocabList[j].translations[i].word == word && !vocabList[j].translations[i].synonymes.Contains(word))
+                if (vocabList[j].translations[i].word == word)
                 {
-                    vocabList[j].translations[i].synonymes.Add(word);
-                    break;
+                    if (!vocabList[j].translations[i].synonymes.Contains(word))
+                        vocabList[j].translations[i].synonymes.Add(word);
+                    else continue;
+
+                    return;
                 }
                 else if (vocabList[j].translations[i].word != word) continue;
             }

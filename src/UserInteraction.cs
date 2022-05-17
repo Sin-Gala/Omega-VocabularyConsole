@@ -118,7 +118,7 @@ namespace Omega_VocabularyConsole
                 AddingSynonymsPrompt(vWord);
             else if (command == "0")
             {
-                if (vWord == null)
+                if (vWord != null)
                     ConfirmWord(tempVocabWord);
                 else
                     ConfirmWord(vWord);
@@ -173,6 +173,8 @@ namespace Omega_VocabularyConsole
 
         private void AddingSynonymsPrompt(VocabularyWord vWord)
         {
+            Console.Clear();
+
             Console.WriteLine("Please enter the Language index for the synonyms you wish to enter: ");
 
             for (int i = 0; i < dico.languagesSupported.Count; i++)
