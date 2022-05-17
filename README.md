@@ -22,6 +22,7 @@ Everything is saved in two separate files on your computer: a vocabulary.omega t
 I have a few things planned for this side project, but any contributions and feedbacks are welcome!
 
 <ul>
+ <li>Fix synonyms issue (double creation + created before confirmation + not appear correctly) -> probably issue vWord / tempWord
  <li>Add ability to add definitions and/or notes</li>
  <li>Add prompt translations depending on the user's computer language</li>
  <li>Add an app "settings" menu for the user to change it's prompts language as well as the saving directories and more</li>
