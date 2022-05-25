@@ -11,7 +11,5 @@ namespace Omega_VocabularyConsole
     {
         public Languages language;
         public string word;
-        public string def;
-        public List<string> synonymes;
     }
 }
